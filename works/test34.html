@@ -331,13 +331,6 @@
 		var index=obj.selectedIndex; //序号，取当前选中选项的序号
 		if(index==0)
 		{
-			if(st==1)
-			{st=0;}
-			handleKeys();			
-		}
-		else
-		{
-			
 			if(st==0)
 			{
 			xPos = xPos1;
@@ -345,8 +338,13 @@
     		yaw = 0;
     		st=1;			
 			}
-			init();
-
+			init();				
+		}
+		else
+		{
+			if(st==1)
+			{st=0;}
+			handleKeys();
 		}
         drawScene();
     	var f = document.getElementById("zuobiao");//forms[0];
@@ -387,16 +385,15 @@
 </script>
 </head>
 
-
+<h1>Zhongshang Road in Xiamen</h1>
 <body>
     <canvas id="lesson02-canvas" style="border: none;" width="1400" height="700"> 
     	<script>
     		webGLStart();//启动绘图 
 		</script>
    	</canvas>
-    <table border="0">
-    	<tr>
-    		<th>
+   	<ul>
+    <li>
     选择你的移动方式：
     <select ID="moveselect">
   		<option value="walk">行走</option>
@@ -411,18 +408,17 @@
 	</select>
 	选择你的控制方式：
 	<select ID="controlselect">
-  		<option value="keyboard">键盘</option>
   		<option value="touch">自动</option>
+  		<option value="keyboard">键盘</option>
 	</select>
-	</th>
-	<th>		
+	</li>
+	<li>		
 	<form ID="zuobiao">
-    		<p>
+    		<p hidden>
         	x:<output name="x"></output>
         	y:<output name="y"></output>
     		</p>
 	</form>
-	</th>
-	</tr>
-	</table>		
+	</li>
+	</ul>		
 </body></html>
