@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>PointCloud</title>
+	<meta charset="UTF-8" />
+	<link rel="stylesheet" href="css/webgl.css" type="text/css" media="all" />
+	
+    <script type="text/javascript" src="js/Math/Oak3D_v_0_5.js"></script>
+    <script src="js/Math/transf.js"></script>
+    <script src="js/Math/index2.js"></script>
+    <script src="js/Data/cluster_127.js"></script>
+
+	<script id="shader-fs" type="x-shader/x-fragment">
+
+    precision mediump float;
+
+
+    void main(void) {
+        gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    }
+	</script>
+	
+	<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        gl_PointSize=1.0;
+    }
+	</script>
+	
+</head>
+<body onload="webGLStart();" >
+	<canvas id="canvas" style="border: none;" width="1400" height="700">
+    <script type="text/javascript">
+        webGLStart();//启动绘图                
+    </script>
+     </canvas>
+	<ul>
+        <li>使用<code>+</code>键和<code>-</code>键来进行缩放。
+        <li>使用方向键来旋转（你按住方向键时间越长，旋转的越快）。
+    </ul> 
+</body>
+</html>

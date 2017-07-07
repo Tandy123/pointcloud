@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>PointClouds</title>
+	<link rel="shortcut icon" type="image/x-icon" href="css/images/favicon.ico" />
+	<link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="css/flexslider.css" type="text/css" media="all" />
+	
+	<script src="js/jquery-1.7.2.min.js" type="text/javascript"></script>
+	<!--[if lt IE 9]>
+		<script src="js/modernizr.custom.js"></script>
+	<![endif]-->
+	<script src="js/jquery.flexslider-min.js" type="text/javascript"></script>
+	<script src="js/functions.js" type="text/javascript"></script>
+	<base target = "_blank"/>
+	
+	
+	<script type="text/javascript" src="works/js/Math/Oak3D_v_0_5.js"></script>
+    <script src="works/js/Math/transf.js"></script>
+    <script src="works/js/Math/index3.js"></script>
+    <script src="works/js/Data/cluster_127.js"></script>
+
+	<script id="shader-fs" type="x-shader/x-fragment">
+
+    precision mediump float;
+
+
+    void main(void) {
+        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    }
+	</script>
+	
+	<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        gl_PointSize=1.0;
+    }
+	</script>
+</head>
+<body>
+	<!-- wrapper -->
+	<div id="wrapper">
+		<!-- shell -->
+		<div class="shell">
+			<!-- container -->
+			<div class="container">
+							
+				<!-- header -->
+				<header class="header">
+					<h1 id="logo"><a href="#">PC125</a></h1>
+					<nav id="navigation">
+						<ul>
+							<li class="active"><a href="#">首页</a></li>
+							<li><a href="us.html">关于我们</a></li>
+							<li><a href="planning.html">项目规划</li>
+                           
+						</ul>
+					</nav>
+					<div class="cl">&nbsp;</div>
+				</header>
+				<!-- end of header -->
+				<div class="main">
+					<!-- slider -->
+					<div class="flexslider">
+						<ul class="slides">
+							<li>
+								<a href = "works/test3.html">
+								<canvas id="canvas" style="border: none;"width="850" height="350" > 
+									<script>
+										webGLStart();
+									</script>
+								</canvas>
+								</a>
+				
+							</li>
+							<li>
+								<a href = "works/test8.html"><img src="css/images/test8.png" alt="" /></a>								
+							</li>
+							<li>
+								<a href = "works/test15.html"><img src="css/images/test15.png" alt="" /></a>								
+							</li>
+							<li>
+								<a href = "works/test27.html"><img src="css/images/test27.png" alt="" /></a>								
+							</li>
+                            <li>
+								<a href = "works/test28.html"><img src="css/images/test28.png" alt="" /></a>								
+							</li>
+						</ul>
+					</div>
+					<!-- end of slider -->
+                    <!--<div class="copyrights">Collect from <a href="http://www.cssmoban.com/" >More information</a></div>
+					<!-- cols -->
+					
+
+					<!-- box -->
+					<section class="box">
+						<span class="shadow-t"></span>
+						<h3>Recent Works</h3>
+						<a href="MoreWorks.html" target = "_blank" class="alignright"> +Know More</a>
+						<div class="cl">&nbsp;</div>
+						<!-- entries -->
+						<div class="entries">
+							<div class="entry">
+								<a href="works/test25.html" target="_blank"><img src="css/images/test25.png" alt="" /></a>
+								<span class="shadow"></span>
+							</div>
+							<div class="entry">
+								<a href="works/test19.html" target="_blank"><img src="css/images/test19.png" alt="" /></a>
+								<span class="shadow"></span>
+							</div>
+							<div class="entry">
+								<a href="works/test32.html" target="_blank"><img src="css/images/test32.png" alt="" /></a>
+								<span class="shadow"></span>
+							</div>
+							<div class="entry">
+								<a href="works/test34.html" target="_blank"><img src="css/images/test22.png" alt="" /></a>
+								<span class="shadow"></span>
+							</div>
+							<div class="cl">&nbsp;</div>
+							<span class="shadow-b"></span>
+						</div>	
+					<!-- end of entries -->
+					</section>
+					<!-- end of box -->
+					
+					<!-- services -->
+					<section class="services">
+						<div class="widget">
+							<h3></h3>
+							<p class = "new1"></p>
+						</div>
+						<div class="widget contact-widget">
+							<h3><b><strong>联系我们</h3>
+							
+								<p>Address:厦门大学遥感与空间信息科学研究中心
+								</br>
+								<p>Phone:XXXXXXXXXXX
+								</br>
+								<p>Email:XXX@xmu.edu.cn
+							
+						</div>
+						<div class="widget socials-widget">
+							<h3><b><strong>加入我们</h3>
+							
+							<p>QQ群：XXXXXXXXX</p>
+						</div>
+						<div class="cl">&nbsp;</div>
+					</section>
+					<!-- end of services -->
+
+				</div>
+				<!-- end of main -->
+			</div>
+			<!-- end of container -->	
+			<div class="footer">
+				<nav class="footer-nav">
+					<ul>
+						<li><a href="#">首页</a></li>
+						<li><a href="us.html">关于我们</a></li>
+						<li><a href="planning.html">项目规划</li>
+					
+					</ul>
+				</nav>
+				<p class="copy"><b><strong>Copyright &copy; 2014 All Rights Reserved.</p>
+			</div>
+		</div>
+		<!-- end of shell -->
+	</div>
+	<!-- end of wrappert -->
+</body>
+</html>

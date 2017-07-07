@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>PointCloud</title>
+	<meta charset="UTF-8" />
+	<link rel="stylesheet" href="css/webgl.css" type="text/css" media="all" />
+	
+    <script type="text/javascript" src="js/Math/Oak3D_v_0_5.js"></script>
+    <script src="js/Math/transf.js"></script>
+    <script src="js/Math/index9.js"></script>
+    <script src="js/Data/gulangyu.js"></script>
+
+<script id="shader-fs" type="x-shader/x-fragment">
+
+    precision mediump float;
+      
+
+    void main(void) {
+        gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        gl_PointSize=1.0;
+    }
+</script>
+	
+    
+</head>
+<body onload="webGLStart();" >
+	<canvas id="canvas" style="border: none;" width="1400" height="700"> 
+	<script type="text/javascript">      
+    		webGLStart();//启动绘图                      
+    </script>
+    </canvas>
+	<div id="loadingtext">Loading world...</div>
+	<ul>
+        <li>键盘控制说明：使用向上或W键前进，向下或S键后退，向左或A键向左转，向右或D键向右转，PageUp键抬头，PageDown键低头。
+		<li>选择你喜欢的视角：<select ID="viewpointselect">
+  		<option value="day">视角一</option>
+  		<option value="night">视角二</option>
+		</select>    
+    </ul> 
+</body>
+</html>

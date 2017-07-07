@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<title>PointCloud</title>
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="css/webgl.css" type="text/css" media="all" />
+
+<script type="text/javascript" src="js/Math/Oak3D_v_0_5.js"></script>
+<script src="js/Math/transf.js"></script>
+<script src="js/Math/index8.js"></script>
+<script src="js/Data/tielu2.js"></script>
+<script src="js/Data/tielu2c.js"></script>
+
+<script id="shader-fs" type="x-shader/x-fragment">
+
+    precision mediump float;
+
+
+    varying vec4 vColor;
+
+    void main(void) {
+        gl_FragColor = vColor;
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+    attribute vec4 aVertexColor;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    varying vec4 vColor;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vColor = aVertexColor;
+        gl_PointSize=1.0;
+    }
+</script>
+
+
+</head>
+<body onload="webGLStart();">
+	<canvas id="canvas" style="border: none;" width="1400" height="700"> 
+    <script type="text/javascript">
+        webGLStart();
+    </script>
+    </canvas>
+	<div id="loadingtext">Loading world...</div>
+	<ul>
+		<li>键盘控制说明：使用向上或W键前进，向下或S键后退，向左或A键向左转，向右或D键向右转，PageUp键抬头，PageDown键低头。
+		
+	</ul>
+</body>
+</html>

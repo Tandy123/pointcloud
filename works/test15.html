@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>PC125</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" href="css/webgl.css" type="text/css" media="all" />
+	</head>
+<body>
+	<div id="container" width="1400" height="700"></div>
+    <script src="js/jquery-1.4.1.min.js"></script>
+    <script src="js//jquery.mousewheel.js"></script>
+	<script src="js/detector.js"></script>
+	<script src="js/stats.min.js"></script>
+	<script src="js/three.min.js"></script>
+	<script src="js/requestAnimationFrame.js"></script>
+	<script src="js/Math/transf.js"></script>
+	<script src="js/Data/cjg.js"></script>
+	<script src="js/Data/cjgi.js"></script>
+	
+	<script type="x-shader/x-vertex" id="vertexshader">
+
+			uniform float amplitude;
+			attribute float size;
+			attribute vec3 customColor;
+
+			varying vec3 vColor;
+
+			void main() {
+
+				vColor = customColor;
+
+				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+			        gl_PointSize = size;
+
+				gl_Position = projectionMatrix * mvPosition;
+
+			}
+
+	</script>
+
+	<script type="x-shader/x-fragment" id="fragmentshader">
+
+			uniform vec3 color;
+			uniform sampler2D texture;
+
+			varying vec3 vColor;
+
+			void main() {
+
+				gl_FragColor = vec4( color * vColor, 1.0 );
+				gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+
+			}
+
+	</script>
+
+	<script>
+		var _renderer, _scene, _camera, _stats; 
+		var _sphere, uniforms, attributes;
+	    var _controls;
+ 
+		var _isMouseDown = false;
+		var WIDTH = window.innerWidth,
+			HEIGHT = window.innerHeight;
+	    var _projector;
+	    var _offset = new THREE.Vector3();
+ 	
+		calcPointTran ()
+		
+		function init() {
+		    calcPointTran();
+			_camera = new THREE.PerspectiveCamera( 30,WIDTH / HEIGHT,0.0625, 10.0);
+ 			_camera.position.z = 2;
+
+			_scene = new THREE.Scene();
+
+			attributes = {
+				size: {	type: 'f', value: [] },
+				customColor: { type: 'c', value: [] }
+
+			};
+
+			uniforms = {
+				amplitude: { type: "f", value: 1.0 },
+				color:     { type: "c", value: new THREE.Color( 0xffffff ) },
+				texture:   { type: "t", value: 0, texture: THREE.ImageUtils.loadTexture( "js/textures/ball.png" ) },
+
+			};
+
+			var shaderMaterial = new THREE.ShaderMaterial( {
+				uniforms: 		uniforms,
+				attributes:     attributes,
+				vertexShader:   document.getElementById( 'vertexshader' ).textContent,
+				fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+
+				blending: 		THREE.AdditiveBlending,
+				depthTest: 		false,
+				transparent:	true
+
+			});
+
+			var geometry = new THREE.Geometry();
+			var v = 0;
+			var values_size = attributes.size.value;
+			var values_color = attributes.customColor.value;
+						for ( i = 0; i < pwgl.POINTS_VERTEX_POS_BUF_NUM_ITEMS; i ++ ) {
+ 					x = vertexPosition[i*3] -  pwgl.TranslateX ;
+			    	y = vertexPosition[i*3+1] -  pwgl.TranslateY;
+			        z = vertexPosition[i*3+2] -  pwgl.TranslateZ;
+		
+					vector = new THREE.Vector3( x, y, z );
+					vector.multiplyScalar( pwgl.BoxScale );
+					geometry.vertices.push( new THREE.Vertex( vector ) );
+					
+					values_size[ v ] = 3;//点的大小
+					values_color[ v ] = new THREE.Color(vertexPosition3[v]*256);	//点的颜色				
+					
+					v++;
+     		}
+ 
+			_sphere = new THREE.ParticleSystem( geometry, shaderMaterial ); 
+ 			_sphere.dynamic = true;	 
+ 			_sphere.scale.z = 1;
+ 			_sphere.scale.x = 1;
+ 			_sphere.scale.y = 1;
+ 			
+			_scene.add( _sphere );
+ 	
+			_projector = new THREE.Projector();
+ 			_renderer = new THREE.WebGLRenderer( { clearColor: 0x000000, clearAlpha: 1 } );
+			_renderer.setSize( WIDTH, HEIGHT );
+			
+			_controls = new THREE.TrackballControls( _camera );
+			_controls.rotateSpeed = 1.0;
+			_controls.zoomSpeed = 1.2;
+			_controls.panSpeed = 0.8;
+			_controls.noZoom = false;
+			_controls.noPan = false;
+			_controls.staticMoving = true;
+			_controls.dynamicDampingFactor = 0.3;
+			//鼠标控制事件
+			_renderer.domElement.addEventListener( 'mousedown', function ( event ) {
+				event.preventDefault();
+				_isMouseDown = true;
+			
+			}, false );
+			_renderer.domElement.addEventListener( 'mousemove', function ( event ) {	
+				event.preventDefault();
+				render();		
+			}, false );
+			_renderer.domElement.addEventListener( 'mouseup', function ( event ) {		
+			    event.preventDefault();		
+				_isMouseDown = false; 
+	
+			}, false );
+			var container = $("#container");
+		    container.mousewheel(function(event, delta, deltaX, deltaY) {
+		    		if (delta < 0){
+	             		_sphere.scale.z /= 1.25;
+ 						_sphere.scale.x /= 1.25;
+ 						_sphere.scale.y /= 1.25;
+ 					}else{
+ 					    _sphere.scale.z *= 1.25;
+ 						_sphere.scale.x *= 1.25;
+ 						_sphere.scale.y *= 1.25;		
+ 					}
+	 				render();
+	                return false; // prevent default
+	        });
+		 
+			container.append( _renderer.domElement );
+
+			_stats = new Stats();
+			_stats.domElement.style.position = 'absolute';
+			_stats.domElement.style.top = '0px';
+			container.append( _stats.domElement );
+			render();
+		}
+		function render() {
+ 			_controls.update();
+			_renderer.clear(); 
+			_renderer.render( _scene, _camera );
+		}
+		
+		function animate() {
+			requestAnimationFrame( animate );
+			render();
+			_stats.update();
+		}
+		
+		function ready() {
+ 			//判断是否支持WebGL
+			if ( Detector.webgl ) {
+ 				init();
+ 				animate();
+ 			} else {
+				$("body").eq(0).prepend( Detector.getWebGLErrorMessage() );
+			}
+		}
+		ready();
+		</script>
+	</body>
+</html>

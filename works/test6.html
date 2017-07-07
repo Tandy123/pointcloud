@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<title>PC125</title>
+<link rel="stylesheet" href="css/webgl.css" type="text/css" media="all" />
+
+	<script src="js/detector.js"></script>
+	<script src="js/three.min.js"></script>
+	<script src="js/requestAnimationFrame.js"></script>
+	<script src="js/Math/transf.js"></script>
+	<script src="js/Data/cluster_127.js"></script>
+	
+	<script type="x-shader/x-vertex" id="vertexshader">
+
+			uniform float amplitude;
+			attribute float size;
+			attribute vec3 customColor;
+
+			varying vec3 vColor;
+
+			void main() {
+
+				vColor = customColor;
+
+				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+			        gl_PointSize = size;
+
+				gl_Position = projectionMatrix * mvPosition;
+
+			}
+
+	</script>
+
+	<script type="x-shader/x-fragment" id="fragmentshader">
+
+			uniform vec3 color;
+			uniform sampler2D texture;
+
+			varying vec3 vColor;
+
+			void main() {
+
+				gl_FragColor = vec4( color * vColor, 1.0 );
+				gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+
+			}
+
+	</script>
+
+	<script>
+	
+	var renderer = null, 
+		scene = null, 
+		camera = null,
+		animating = false,
+		sphere=null,
+		uniforms=null,
+		attributes=null;
+	var WIDTH = window.innerWidth,
+		HEIGHT = window.innerHeight;
+			
+	function onLoad()
+	{
+		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+		calcPointTran();
+
+        var container = document.getElementById("container");
+
+	    renderer = new THREE.WebGLRenderer( {clearColor: 0x000000,clearAlpha: 1,antialias: true } );
+	    renderer.setSize(container.offsetWidth, container.offsetHeight);
+	    container.appendChild( renderer.domElement );
+
+	    scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera( 45, container.offsetWidth / container.offsetHeight, 0.0625, 10.0);
+        camera.position.set( 0, 0, 1.5 );
+
+		var light = new THREE.DirectionalLight( 0xffffff, 1.5);
+		light.position.set(0, 0, 1);
+		scene.add( light );
+
+        attributes = {
+				size: {	type: 'f', value: [] },
+				customColor: { type: 'c', value: [] }
+		};
+		uniforms = {
+			amplitude: { type: "f", value: 1.0 },
+			color:     { type: "c", value: new THREE.Color( 0xffffff ) },
+			texture:   { type: "t", value: 0, texture: THREE.ImageUtils.loadTexture( "js/textures/ball.png" ) },
+		};
+        var material = new THREE.ShaderMaterial( {
+			uniforms: 		uniforms,
+			attributes:     attributes,
+			vertexShader:   document.getElementById( 'vertexshader' ).textContent,
+			fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+			blending: 		THREE.AdditiveBlending,
+			depthTest: 		false,
+			transparent:	true
+		});
+
+        var geometry = new THREE.Geometry();
+        
+        var v = 0;
+		var values_size = attributes.size.value;
+		var values_color = attributes.customColor.value;
+		for ( i = 0; i < pwgl.POINTS_VERTEX_POS_BUF_NUM_ITEMS; i ++ ) {
+ 				x = vertexPosition[i*3] -  pwgl.TranslateX ;
+			    y = vertexPosition[i*3+1] -  pwgl.TranslateY;
+			    z = vertexPosition[i*3+2] -  pwgl.TranslateZ;
+				vector = new THREE.Vector3( x, y, z );
+				vector.multiplyScalar( pwgl.BoxScale );
+				geometry.vertices.push( new THREE.Vertex( vector ) );					
+				values_size[ v ] = 2;
+				values_color[ v ] = new THREE.Color( 0xffffff );					
+				v++;
+     	}
+
+        sphere = new THREE.ParticleSystem( geometry, material );
+ 		sphere.dynamic = true;       
+
+        sphere.rotation.x = -Math.PI/2;
+        //sphere.rotation.y = Math.PI / 5;
+
+        scene.add( sphere );
+
+        addMouseHandler();
+
+        run();
+	}
+
+	function run()
+	{
+		// Render the scene
+		renderer.render( scene, camera );
+
+		// Spin the cube for next frame
+		if (animating)
+		{
+			sphere.rotation.z -= 0.01;
+		}
+			
+		// Ask for another frame
+    	requestAnimationFrame(run);	
+	}
+
+	function addMouseHandler()
+	{
+		var dom = renderer.domElement;
+		
+		dom.addEventListener( 'mouseup', onMouseUp, false);
+	}
+	
+	function onMouseUp	(event)
+	{
+	    event.preventDefault();
+
+	    animating = !animating;
+	}	
+	</script>
+
+</head>
+<body>
+	<center><h1>PC125</h1></center>
+    <div id="container" style="width:99%; height:80%; position:absolute;">
+    <script>
+    onLoad();
+	</script></div>
+	<div id="prompt" style="width:95%; height:6%; bottom:0; text-align:center; position:absolute;">使用鼠标点击旋转场景</div>
+</body>
+</html>
